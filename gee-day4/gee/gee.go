@@ -44,9 +44,9 @@ func (group *RouterGroup) Group(prefix string) *RouterGroup {
 }
 
 func (group *RouterGroup) addRoute(method string, comp string, handler HandlerFunc) {
-	pattern:=group.prefix+comp
+	pattern := group.prefix + comp
 	log.Printf("Route %4s - %s", method, pattern)
-	group.engine.router.addRoute(method,pattern,handler)
+	group.engine.router.addRoute(method, pattern, handler)
 }
 
 //GET 定义了添加GET请求的方法
@@ -59,7 +59,7 @@ func (group *RouterGroup) POST(pattern string, handler HandlerFunc) {
 	group.addRoute("POST", pattern, handler)
 }
 
-//Run defines the method to start a http server
+//Run 定义启动 HTTP 服务器的方法
 func (engine *Engine) Run(addr string) (err error) {
 	return http.ListenAndServe(addr, engine)
 }
