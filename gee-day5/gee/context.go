@@ -10,14 +10,14 @@ type H map[string]interface{}
 
 type Context struct {
 	//origin objects
-	Writer http.ResponseWriter
-	Req    *http.Request
+	Writer http.ResponseWriter //响应
+	Req    *http.Request       //请求
 	//request information
 	Path   string
 	Method string
-	Params map[string]string
+	Params map[string]string //路由参数
 	//response info
-	StatusCode int
+	StatusCode int //响应状态码
 	//middleware
 	handlers []HandlerFunc
 	index    int
@@ -38,7 +38,9 @@ func newContext(w http.ResponseWriter, r *http.Request) *Context {
 func (c *Context) Next() {
 	c.index++
 	s := len(c.handlers)
+	//如果中间件执行完毕，返回
 	for ; c.index < s; c.index++ {
+		//执行中间件
 		c.handlers[c.index](c)
 	}
 }
