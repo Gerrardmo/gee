@@ -36,6 +36,7 @@ func (n *node) matchChildren(part string) []*node {
 func (n *node) insert(pattern string, parts []string, height int) {
 	//parts为空，说明已经到了最后一个节点
 	if len(parts) == height {
+		//如果pattern为空，说明已经存在了
 		n.pattern = pattern
 		return
 	}

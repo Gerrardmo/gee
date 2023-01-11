@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// Logger 定义Logger函数  用于记录请求和响应
 func Logger() HandlerFunc {
 	return func(c *Context) {
 		// Start timer 开始计时
