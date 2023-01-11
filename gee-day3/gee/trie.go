@@ -3,7 +3,7 @@ package gee
 import "strings"
 
 type node struct {
-	pattern   string  //待匹配路由  例如/p/:xxx
+	pattern  string  //待匹配路由  例如/p/:xxx
 	part     string  //路由中的一部分
 	children []*node //子节点 例如[xxx,xxx,xxx]
 	isWild   bool    //是否精准匹配   part中有:和*时为true
