@@ -34,7 +34,7 @@ func newContext(w http.ResponseWriter, r *http.Request) *Context {
 	}
 }
 
-//Next 用于执行下一个中间件
+//Next 用于执行下一个中间件  执行handlefunc[]中的下一个函数
 func (c *Context) Next() {
 	c.index++
 	s := len(c.handlers)
