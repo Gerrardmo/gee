@@ -1,6 +1,7 @@
 package gee
 
 import (
+	"html/template"
 	"log"
 	"net/http"
 	"path"
@@ -20,9 +21,11 @@ type RouterGroup struct {
 
 //Engine implement the interface of servehttp 		定义engine结构体  实现了servehttp接口
 type Engine struct {
-	*RouterGroup                //继承RouterGroup
-	router       *router        //定义一个router实例
-	groups       []*RouterGroup // store all groups 存储所有的路由组
+	*RouterGroup                     //继承RouterGroup
+	router        *router            //定义一个router实例
+	groups        []*RouterGroup     // store all groups 存储所有的路由组
+	htmlTemplates *template.Template // for html render 用于html渲染 模板 有点类似于jsp
+	funcMap       template.FuncMap   // for html render 用于html渲染 函数映射 自定义函数 例如：{{now}}
 }
 
 //New is the Constructor of gee.engine 		定义New函数  用于创建一个engine实例
@@ -84,6 +87,7 @@ func (engine *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	c := newContext(w, r)
 	c.handlers = middlewares
+	c.engine = engine
 	engine.router.handle(c)
 
 }
@@ -109,4 +113,16 @@ func (group *RouterGroup) Static(relativePath string, root string) {
 	urlPattern := path.Join(relativePath, "/*filepath")
 	// register GET handlers
 	group.GET(urlPattern, handler)
+}
+
+//SetFuncMap 用于设置模板 例如：engine.SetHTMLTemplate(template)
+func (engine *Engine) SetFuncMap(funcMap template.FuncMap) {
+	//这里是设置模板 例如：engine.SetHTMLTemplate(template)
+	engine.funcMap = funcMap
+}
+
+//LoadHTMLGlob 用于加载模板 例如：engine.LoadHTMLGlob("templates/*")
+func (engine *Engine) LoadHTMLGlob(pattern string) {
+	//这里是加载模板 例如：engine.LoadHTMLGlob("templates/*") 会加载templates目录下的所有模板 例如：templates/index.html
+	engine.htmlTemplates = template.Must(template.New("").Funcs(engine.funcMap).ParseGlob(pattern))
 }

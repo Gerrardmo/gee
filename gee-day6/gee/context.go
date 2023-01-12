@@ -21,6 +21,7 @@ type Context struct {
 	//middleware
 	handlers []HandlerFunc
 	index    int
+	engine   *Engine
 }
 
 //newContext 用于创建Context
@@ -96,11 +97,15 @@ func (c *Context) Date(code int, date []byte) {
 	c.Writer.Write(date)
 }
 
-//HTML 用于设置响应HTML
-func (c *Context) HTML(code int, html string) {
+//HTML 用于设置HTML响应
+func (c *Context) HTML(code int, name string, data interface{}) {
+	//设置响应头 Content-Type
 	c.SetHeader("Content-Type", "text/html")
 	c.Status(code)
-	c.Writer.Write([]byte(html))
+	//如果渲染失败，返回500错误,通过engine的render进行渲染
+	if err := c.engine.htmlTemplates.ExecuteTemplate(c.Writer, name, data); err != nil {
+		c.Fail(http.StatusInternalServerError, err.Error())
+	}
 }
 
 //Fail 用于设置错误响应

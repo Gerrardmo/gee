@@ -18,11 +18,25 @@ func onlyForV2() gee.HandlerFunc {
 	}
 }
 
+type student struct {
+	Name string
+	Age  int8
+}
+
 func main() {
 	r := gee.New()
+	r.Static("/assets", "./static")
 	r.Use(gee.Logger()) // global middleware 全局中间件
 	r.GET("/", func(c *gee.Context) {
-		c.HTML(http.StatusOK, "<h1>Hello Gee</h1>")
+		c.HTML(http.StatusOK, "css.tmpl", nil)
+	})
+	stu1 := &student{Name: "mocw", Age: 20}
+	stu2 := &student{Name: "mocw2", Age: 22}
+	r.GET("/students", func(c *gee.Context) {
+		c.HTML(http.StatusOK, "arr.tmpl", gee.H{
+			"title":  "gee",
+			"stuArr": [2]*student{stu1, stu2},
+		})
 	})
 	r.GET("/hello", func(c *gee.Context) {
 		// expect /hello?name=geektutu
